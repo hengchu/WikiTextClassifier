@@ -1,6 +1,6 @@
 # cis700project
 
-=======
+---
 
 ### To obtain a copy of the data
 
