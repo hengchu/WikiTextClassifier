@@ -31,4 +31,4 @@ converted_back = tok.convert_ids_to_tokens(ids)
 ```
 
 Alternatively, checkout the `main` function for `cis700/tokenizer.py`, and run
-`tokenizer-demo` (running `pip3 install --editable .`) to see it in action.
+`tokenizer-demo` (after running `pip3 install --editable .`) to see it in action.
