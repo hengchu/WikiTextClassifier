@@ -15,3 +15,20 @@
 9. Verify that there is now a `joinedlonabstract_en.nt` in the data directory
 
 Step 5 only needs to be performed once, but step 6 needs to run everytime you start a new shell.
+
+---
+
+### Using BERT tokenizer
+
+```
+from cis700 import tokenizer
+
+tok = tokenizer.build_tokenizer()
+tokens = tok.tokenize('this is some arbitrary text data.')
+# this is what we would pass to the network
+ids = tok.convert_tokens_to_ids(tokens)
+converted_back = tok.convert_ids_to_tokens(ids)
+```
+
+Alternatively, checkout the `main` function for `cis700/tokenizer.py`, and run
+`tokenizer-demo` (running `pip3 install --editable .`) to see it in action.

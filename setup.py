@@ -9,6 +9,7 @@ setup(name='cis700project',
       entry_points={
           'console_scripts': [
               'prepare-data = cis700.prepare:main',
+              'tokenizer-demo = cis700.tokenizer:main',
           ]
       }
 )
