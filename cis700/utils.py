@@ -114,7 +114,7 @@ def transformer_validate(model, dataloader, device):
     total = 0
 
     for _, batch in enumerate(dataloader):
-      X = batch[0]
+      X = batch[0].type(torch.LongTensor)
       masks = batch[1]
       y = batch[2]
       _, predicted = torch.max(model(X.to(device), masks.to(device)), 1)
