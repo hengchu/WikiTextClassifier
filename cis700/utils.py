@@ -106,7 +106,7 @@ def gan_train(g_model, d_model, X, z, g_opt, d_opt, g_loss, d_loss):
 
   return g_loss_tensor, d_loss_tensor, real_loss, fake_loss
 
-def transformer_validate(model, dataloader, device):
+def transformer_validate(model, dataloader, y_idx, device):
   model.eval()
 
   with torch.no_grad():
@@ -116,7 +116,7 @@ def transformer_validate(model, dataloader, device):
     for _, batch in enumerate(dataloader):
       X = batch[0].type(torch.LongTensor)
       masks = batch[1]
-      y = batch[2]
+      y = batch[y_idx]
       _, predicted = torch.max(model(X.to(device), masks.to(device)), 1)
       num_correct += (predicted == y.to(device)).float().sum()
       total += X.shape[0]
