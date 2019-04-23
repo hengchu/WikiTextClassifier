@@ -122,4 +122,4 @@ class DBPediaDataset(Dataset):
 
   def __getitem__(self, idx):
     dt = self.data[idx]
-    return torch.Tensor(dt.ids), torch.Tensor(dt.masks), dt.fine_cat, dt.coarse_cat
+    return torch.Tensor(dt.ids), torch.Tensor(dt.masks), dt.fine_cat, dt.coarse_cat, idx
