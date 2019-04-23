@@ -18,6 +18,18 @@ def train(model, X, y, loss_fun, optimizer):
     _, predicted = torch.max(model(X), 1)
     return (loss, (predicted == y).float().sum() / X.shape[0])
 
+def transformer_train(model, X, masks, y, loss_fun, optimizer):
+  model.train()
+  optimizer.zero_grad()
+  output = model(X, masks)
+  loss = loss_fun(output, y)
+  loss.backward()
+  optimizer.step()
+
+  with torch.no_grad():
+    _, predicted = torch.max(model(X, masks), 1)
+    return (loss, (predicted == y).float().sum() / X.shape[0])
+
 def ae_train(model, X, loss_fun, optimizer):
   model.train()
   optimizer.zero_grad()
@@ -93,6 +105,23 @@ def gan_train(g_model, d_model, X, z, g_opt, d_opt, g_loss, d_loss):
   d_opt.step()
 
   return g_loss_tensor, d_loss_tensor, real_loss, fake_loss
+
+def transformer_validate(model, dataloader, device):
+  model.eval()
+
+  with torch.no_grad():
+    num_correct = 0
+    total = 0
+
+    for _, batch in enumerate(dataloader):
+      X = batch[0]
+      masks = batch[1]
+      y = batch[2]
+      _, predicted = torch.max(model(X.to(device), masks.to(device)), 1)
+      num_correct += (predicted == y.to(device)).float().sum()
+      total += X.shape[0]
+
+    return num_correct / total
 
 def validate(model, dataloader, device):
   model.eval()
