@@ -37,9 +37,21 @@ This looks great! Those categories serve as perfect labels for our task, and we 
 
 In our experiments, we extract two types of categories for each piece of text: a **coarse** one and a **fine-grained** one.
 
-[TODO: add details of how categories are extracted?]
+The original DBPedia long abstract dataset mapped each body of text to its most
+descriptive category, which resulted in more than 1 million total categories. We
+used DBPedia's hierarchy dataset on categories, and built a hierarchy graph of
+all categories. As we go towards the "top" of this graph, the labels become more
+and more abstract, and the total number of labels decrease with respect to how
+abstract the labels are. For each original descriptive label, we traversed a
+fixed N steps toward the top of the graph to generate a fine label, and a fixed
+N + 2 steps towards the top to generate a coarse label. This reduces the total
+amount of labels to a more manageable degree. However, we must be careful to not
+reduce the labels too much. Otherwise, a text descibing a music album will get
+labeled as "Primates" (because music albums are created by humans, and humans
+are primates). We tuned N so that the labels still appear descriptive of the
+text for humans.
 
-We finally get 370 coarse categories and 180 fine-grained categories.
+We finally get 370 fine categories and 180 coarse categories.
 
 ## Performance of different models
 ### Models
@@ -47,9 +59,9 @@ Let's get down to the task, and get some numbers. We implement the task on three
 
 The self-attetion model takes the inspiration from Transformer. Generally, a Transformer consists of an encoder and a decoder to transduce sequences. We retain a similar encoder with multi-head self-attention, as shown in the figure below, and then directly add a fully connected linear layer for classification.
 
-<center><img src="http://jalammar.github.io/images/t/transformer_resideual_layer_norm.png" width="500"></center> 
+<center><img src="http://jalammar.github.io/images/t/transformer_resideual_layer_norm.png" width="500"></center>
 <center> source: [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) </center>
-  
+
 ### Word Representation
 There are various word embeddings out there. But we decide to train our own embeddings. Spefically, we will first have a dictionary containing thousands of words. Then we feed the size of vocabulary into `nn.embedding` module in PyTorch and it will randomly initialize embeddings. As we train of our model, the word embeddings are also trained as a by-product of the learning process.
 
@@ -74,15 +86,15 @@ Here is an example for fine-grained categorization:
 
 **Raw text**
 
-	ichat Inc (sometimes written iChat Inc) was a company that created instant 
+	ichat Inc (sometimes written iChat Inc) was a company that created instant
 	messaging software and associated technology for embedding chat rooms in web
-	pages. The company was founded by Andrew Busey. ichat was also the name of 
-	their initial product. Claims that Apple's iChat client was based on the 
+	pages. The company was founded by Andrew Busey. ichat was also the name of
+	their initial product. Claims that Apple's iChat client was based on the
 	company's technology appear unfounded.
 
 **Coarse category**: Articles</br>
 **Fine-grained category**: History</br>
-**Top predictions**: 
+**Top predictions**:
 > Information\_technology</br>
 > Communication</br>
 > Main\_topic\_classifications</br>
@@ -94,7 +106,7 @@ OK, *information technology* is arguably a better categorization, but we end up 
 We surmise that, it is because we went too far up the classification graph when generating the data categories (especially for fine-grained ones). When reducing categories too much, they'll become too general to make sense. For example, an article on music albums will eventually be grouped under ‘Human’, ‘Primates’ etc. Therefore, with a "super" gold data, we might achieve better accuracies using current models.
 
 ## Can two types of categories improve each other?
-Intuitively, coarse labels are easier to aquire. A network doing fine-grained classification will converge faster if pre-trained on coarse labels. Compared to training directly on fine labels, this method is quick, handy and can achieve comparable results. 
+Intuitively, coarse labels are easier to aquire. A network doing fine-grained classification will converge faster if pre-trained on coarse labels. Compared to training directly on fine labels, this method is quick, handy and can achieve comparable results.
 
 On the other hand, if a network is first trained on finer-grained categories, it should find it easy when testing on coarse labels and performs better. These ideas direct us to the following formal hypotheses, and we validate them with experimental results.
 
