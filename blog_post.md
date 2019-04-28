@@ -13,9 +13,23 @@ Is text classification a solved task? A general belief is no. What is left there
 Being one of the most famous parts of the decentralized Linked Data effort (commented by Tim Berners-Lee), [**DBpedia**](https://en.wikipedia.org/wiki/DBpedia) is a project aiming to extract critical structured content from the information created in Wikipedia.
 
 Downloaded from DBpedia website, the data we use is long abstracts of entities in quad-turtle (tql) serialization. Once decompressed, the dataset contains one line for each queadruple of `<dbpedia_object_url, dbpedia_ontology_info, text, wikipedia_url>`. For example, the first two lines of this file are (text abbreviated):
-1. <http://dbpedia.org/resource/Animalia_(book)> <http://dbpedia.org/ontology/abstract>"Animalia is an illustrated children's book..."@en<http://en.wikipedia.org/wiki/Animalia_(book)?oldid=741600610>2. <http://dbpedia.org/resource/List_of_Atlas_Shrugged_characters><http://dbpedia.org/ontology/abstract> "This is a list of characters in Ayn Rand's..."@en<http://en.wikipedia.org/wiki/List_of_Atlas_Shrugged_characters?oldid=744468068>
-The `dbpedia_object_url` contains categories that this body of text belongs to.  <br/> For example, the first body of text belongs to these categories:
-1. [dbc:1986_books](http://dbpedia.org/page/Category:1986_books)2. [dbc:Alphabet_books](http://dbpedia.org/page/Category:Alphabet_books)3. [dbc:Australian\_children's_books](http://dbpedia.org/page/Category:Australian_children's_books)4. [dbc:Children's\_picture_books](http://dbpedia.org/page/Category:Children's_picture_books)5. [dbc:Picture\_books\_by\_Graeme_Base](http://dbpedia.org/page/Category:Picture_books_by_Graeme_Base)6. [dbc:Puzzle_books](http://dbpedia.org/page/Category:Puzzle_books)
+
+1. <http://dbpedia.org/resource/Animalia_(book)> <http://dbpedia.org/ontology/abstract>
+"Animalia is an illustrated children's book..."@en
+<http://en.wikipedia.org/wiki/Animalia_(book)?oldid=741600610>
+
+2. <http://dbpedia.org/resource/List_of_Atlas_Shrugged_characters>
+<http://dbpedia.org/ontology/abstract> "This is a list of characters in Ayn Rand's..."@en
+<http://en.wikipedia.org/wiki/List_of_Atlas_Shrugged_characters?oldid=744468068>
+
+The `dbpedia_object_url` contains categories that this body of text belongs to.  <br/> For example, the first body of text belongs to these categories:
+
+1. [dbc:1986_books](http://dbpedia.org/page/Category:1986_books)
+2. [dbc:Alphabet_books](http://dbpedia.org/page/Category:Alphabet_books)
+3. [dbc:Australian\_children's_books](http://dbpedia.org/page/Category:Australian_children's_books)
+4. [dbc:Children's\_picture_books](http://dbpedia.org/page/Category:Children's_picture_books)
+5. [dbc:Picture\_books\_by\_Graeme_Base](http://dbpedia.org/page/Category:Picture_books_by_Graeme_Base)
+6. [dbc:Puzzle_books](http://dbpedia.org/page/Category:Puzzle_books)
 
 As is shown above, each of these categories inhabit a level of granularity in a hierarchy. For example, [dbc:Puzzle_books](http://dbpedia.org/page/Category:Puzzle_books) is a subcategory of [dbc:Puzzles](http://dbpedia.org/page/Category:Puzzles).
 
@@ -34,7 +48,7 @@ Let's get down to the task, and get some numbers. We implement the task on three
 The self-attetion model takes the inspiration from Transformer. Generally, a Transformer consists of an encoder and a decoder to transduce sequences. We retain a similar encoder with multi-head self-attention, as shown in the figure below, and then directly add a fully connected linear layer for classification.
 
 <center><img src="http://jalammar.github.io/images/t/transformer_resideual_layer_norm.png" width="500"></center> 
-<center>source: [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/)</center>
+<center> source: [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) </center>
   
 ### Word Representation
 There are various word embeddings out there. But we decide to train our own embeddings. Spefically, we will first have a dictionary containing thousands of words. Then we feed the size of vocabulary into `nn.embedding` module in PyTorch and it will randomly initialize embeddings. As we train of our model, the word embeddings are also trained as a by-product of the learning process.
