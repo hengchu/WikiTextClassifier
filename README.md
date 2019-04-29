@@ -14,6 +14,15 @@ in the next section.
 Next, you should be able to load each notebook into a jupyter session, and step
 through the cells.
 
+The organization for the ipynb is as follows:
+`LogReg.ipynb`: Logistic Regression Baseline
+`LSTM.ipynb`: LSTM Baseline
+`Transformer.ipynb`: Self-attention baseline and Experiment 2 (Bootstrapping)
+`Transformer_transferlearning.ipynb`:  Experiment 1 (Transfer Leaning)
+
+In addition to the datasets (which can be obtained below), LSTM.ipynb and Transformer_transferlearning.ipynb require the files catstats.csv and supercatstats.csv to be saved to your google drive. 
+Some other relevant files:
+
 `cis700/dataset.py`: code for loading data as a pytorch dataset
 
 `cis700/prepare.py`: code for pre-processing DBPedia data into a format convenient for us
