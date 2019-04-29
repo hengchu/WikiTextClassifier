@@ -34,7 +34,7 @@ The `dbpedia_object_url` contains categories that this body of text belongs to. 
 The categories above each inhabit a level of granularity in a hierarchy. For example, the `dbpedia_object_url` [dbc:Puzzle_books](http://dbpedia.org/page/Category:Puzzle_books) is a subcategory of [dbc:Puzzles](http://dbpedia.org/page/Category:Puzzles).
 
 This looks great! Those categories serve as perfect labels for our task, and we get away with manual annotation, which is painfully inefficient and expensive.
-<img align="right" width="300" src="https://www.researchgate.net/profile/David_Chen136/publication/273122359/figure/fig17/AS:613998374436864@1523400028040/DBpedia-ontology.png">
+<img align="right" width="400" src="https://www.researchgate.net/profile/David_Chen136/publication/273122359/figure/fig17/AS:613998374436864@1523400028040/DBpedia-ontology.png">
 
 In our experiments, we extract two types of categories for each piece of text: a **coarse** one and a **fine-grained** one.
 
