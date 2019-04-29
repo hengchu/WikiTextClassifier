@@ -44,12 +44,12 @@ used DBPedia's hierarchy dataset on categories, and built a hierarchy graph of
 all categories. As we go towards the "top" of this graph, the labels become more
 and more abstract, and the total number of labels decrease with respect to how
 abstract the labels are. For each original descriptive label, we traversed a
-fixed N steps toward the top of the graph to generate a fine label, and a fixed
-N + 2 steps towards the top to generate a coarse label. This reduces the total
+fixed <math><mn>N</mn></math> steps toward the top of the graph to generate a fine label, and a fixed
+<math><mn>N+2</mn></math> steps towards the top to generate a coarse label. This reduces the total
 amount of labels to a more manageable degree. However, we must be careful to not
 reduce the labels too much. Otherwise, a text descibing a music album will get
 labeled as "Primates" (because music albums are created by humans, and humans
-are primates). We tuned N so that the labels still appear descriptive of the
+are primates). We tuned <math><mn>N</mn></math> so that the labels still appear descriptive of the
 text for humans.
 
 We finally get 370 fine categories and 180 coarse categories.
