@@ -121,22 +121,23 @@ If we want to train a network to classify the articles into fine categories, we 
 #### Experiments
 We first train an encoder and a classifier on coarsely-labeled data for 2 epochs. We then take this network, swap out the logits layer, and continue training on fine-labeled data. Note that we freeze downstream layers from the logits layer for the first ~100 iterations to make sure that the large gradients caused by reinitializing the logits layer do not mess up the initial pretrained layers. After training, we will evaluate performance and the number of epochs required to achieve performance comparable to baselines.
 
-As a result, using this "**bootstrapping**" method, we achieve a comparable accuracy by continue training on fine labels only **6** epochs, compared to directly training on fine labels for **10** epochs in baseline. We continue training and after 10 epochs, the final accuracy is **43.91%**. A more strightforward comparison is shown in tables below.
+As a result, using this "**bootstrapping**" method, we achieve a comparable accuracy by continue training on fine labels only **6** epochs, compared to directly training on fine labels for **10** epochs in baseline. We continue training and after 10 epochs, the final accuracy is **43.91%**. A more straightforward comparison is shown in tables below.
 
 <center>
+	
+#### \# epochs to achieve comparable accuracy
 
 |          | baseline | bootstrapping       |
 |:--------:|:--------:|:-------------------:|
 | # epochs | 10(fine) | 2(coarse) + 6(fine) |
 
-\# epochs to achieve comparable accuracy
-
+#### Accuracy after training for 10 epochs on fine labels
 
 |          | baseline | bootstrapping |
 |:--------:|:--------:|:-------------:|
 | accuracy | 43.25%   | **43.91%**    |
 
-Accuracy after training for 10 epochs on fine labels</center>
+</center>
 
 ### Fine -> Coarse
 #### Hypothesis
