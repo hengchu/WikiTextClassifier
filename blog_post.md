@@ -2,17 +2,17 @@
 
 <center><img src="https://goo.gl/u7J5r3" width="400"></center>
 
-Text classification is an old, classical problem in the field of *supervised* machine learning, maybe too old. It is widely used either commercially: building spam filters, depression detection in social media etc., or as a benchmark task for evaluating newly-designed models in academia.
+Text classification is an old, classical problem in the field of *supervised* machine learning--maybe too old. It is widely used either commercially: building spam filters, depression detection in social media etc., or as a benchmark task for evaluating newly-designed models in academia.
 
-Is text classification a solved task? A general belief is no. What is left there, and how can we improve it? In this article, we will discuss our hypotheses and findings of text classification on DBpedia data.
+Is text classification a solved task? The general belief is that it is not. What is left there, and how can we improve it? In this article, we will discuss our hypotheses for and findings from text classification on DBpedia data.
 
 ## Why DBpedia?
-**TL; DR**: DBpedia provides categories for entities in different granularity levels. This is awesome for text classification tasks, as we can avoid manual annotation.
+**TL; DR**: DBpedia provides categories for entities at different levels of granularity. This is awesome for text classification tasks, as we can avoid manual annotation for their topics. 
 
 <!--<center><img src="http://i66.tinypic.com/2uqis9g.png" width="500"></center>-->
 Being one of the most famous parts of the decentralized Linked Data effort (commented by Tim Berners-Lee), [**DBpedia**](https://en.wikipedia.org/wiki/DBpedia) is a project aiming to extract critical structured content from the information created in Wikipedia.
 
-Downloaded from DBpedia website, the data we use is long abstracts of entities in quad-turtle (tql) serialization. Once decompressed, the dataset contains one line for each queadruple of `<dbpedia_object_url, dbpedia_ontology_info, text, wikipedia_url>`. For example, the first two lines of this file are (text abbreviated):
+Downloaded from DBpedia website, the data we use is long abstracts of entities in quad-turtle (tql) serialization. Once decompressed, the dataset contains one line for each quadruple of `<dbpedia_object_url, dbpedia_ontology_info, text, wikipedia_url>`. For example, the first two lines of this file are (text abbreviated):
 
 1. <http://dbpedia.org/resource/Animalia_(book)> <http://dbpedia.org/ontology/abstract>
 "Animalia is an illustrated children's book..."@en
@@ -55,32 +55,32 @@ We finally get 370 fine categories and 180 coarse categories.
 
 ## Performance of different models
 ### Models
-Let's get down to the task, and get some numbers. We implement the task on three different models: **Logistic Regression**, **LSTM**, and a **self-attention** model. These correspond to a non-deep learning benchmark, a base deep model, and an advanced deep model. Hypothetically, the performance will increase with the model being more complicated. Before jumping to the result, let me expand a bit on the self-attention model.
+Let's get down to the task, and get some numbers. We implement the task on three different models: **Logistic Regression**, **LSTM**, and a **self-attention** model. These correspond to a non-deep learning benchmark, a base deep model, and an advanced deep model. Hypothetically, the performance will increase with the level of complication of the model. Before jumping to the result, let me expand a bit on the self-attention model.
 
-The self-attetion model takes the inspiration from Transformer. Generally, a Transformer consists of an encoder and a decoder to transduce sequences. We retain a similar encoder with multi-head self-attention, and then directly add a fully connected linear layer for classification. Our final model has 6 encoder layers, with one typical layer shown in the figure below.
+The self-attention model gets inspiration from the Transformer model. Generally, a Transformer consists of an encoder and a decoder to transduce sequences. We retain a similar encoder with multi-head self-attention, and then directly add a fully connected linear layer for classification. Our final model has 6 encoder layers, with one typical layer shown in the figure below.
 
 <center><img src="http://jalammar.github.io/images/t/transformer_resideual_layer_norm.png" width="500"></center>
 <center> source: [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) </center>
 
 ### Word Representation
-There are various word embeddings out there. But we decide to train our own embeddings. Spefically, we will first have a dictionary containing thousands of words. Then we feed the size of vocabulary into `nn.embedding` module in PyTorch and it will randomly initialize embeddings. As we train of our model, the word embeddings are also trained as a by-product of the learning process.
+There are various types of word embeddings out there. But we decide to train our own embeddings. Specifically, we start with a dictionary that contains thousands of words. Then, we feed the size of vocabulary into `nn.embedding` module in PyTorch and it will randomly initialize embeddings. As we train of our model, the word embeddings are also trained as a by-product of the learning process.
 
-But which dictionary do we consult? First, we try to build our own. We filter out stop words, strip punctuation, lowercase everything, and throw out all words that occur less than <math><mn>N</mn></math> times (<math><mn>N</mn></math> varies from 10 to 100) etc. etc. But, our own vocabulry does not doing better than 35% for LSTM. So we end up using [WordPiece](https://arxiv.org/pdf/1609.08144.pdf) vocabulary with over 30,000 tokens (which was also used by BERT for tokenization). And it helps increase the accuracy a LOT!
+But which dictionary do we consult? First, we tried to build our own. We filtered out stop words, stripped punctuation, lowercased all words, and threw out all words that occurred less than <math><mn>N</mn></math> times (<math><mn>N</mn></math> varies from 10 to 100), etc. But when we used our own vocabulary, our LSTM did not perform better than 35%, so we tried using the [WordPiece](https://arxiv.org/pdf/1609.08144.pdf) vocabulary with over 30,000 tokens (which was also used by BERT for tokenization), which helped increase the accuracy a LOT!
 
 ### Results
-Without much surprise, the advanced deep model outperforms the other two.
+Without much surprise, the advanced deep model outperforms the other two models.
 <center>
 
-|                     | Logistice Regression  | LSTM  | Self-attention model |
+|                     | Logistic Regression  | LSTM  | Self-attention model |
 |:-------------------:|:---------------------:|:-----:| :-------------------:|
 |coarse category      | 32.12%                | 43.71%| **44.22%**           |
 |fine-grained category| 33.73%                | 42.55%| **43.25%**           |
 </center>
 
-For those of you interested in hyperparameters, we set the dimension of word embeddings to be **50** across all experiments. On our self-attention model, increasing the size of embeddings will help improve the accuracy no more than 0.3%, but it takes notoriously longer time to train. So we keep the dimension to be short.
+For those of you interested in hyperparameters, we set the dimension of word embeddings to be **50** across all experiments. On our self-attention model, increasing the size of embeddings helped improve the accuracy no more than 0.3%, but it takes notoriously longer time to train. So, we kept the dimensions short.
 
 ## Error analysis
-However, a more complicated model does not exceed basic LSTM much. What's preventing our model learning better? Having a look at some wrong predictions might give us some insights.
+However, the performance of our more complicated model did not exceed that of the basic LSTM by much. What prevented our model from learning better? Taking a look at some of the wrong predictions that our model made might give us some insight.
 
 Here is an example for fine-grained categorization:
 
@@ -101,14 +101,14 @@ Here is an example for fine-grained categorization:
 > Eponymous_categories</br>
 > Business
 
-OK, *information technology* is arguably a better categorization, but we end up being wrong. *History* is, no doubt a more vague and less related category for a piece of text describing a tech company.
+OK, though *information technology* is arguably a better categorization, we ended up being wrong because *history*, our gold label, is no doubt a more vague and less-related category for a piece of text describing a tech company.
 
-We surmise that, it is because we went too far up the classification graph when generating the data categories (especially for fine-grained ones). When reducing categories too much, they'll become too general to make sense. For example, an article on music albums will eventually be grouped under ‘Human’, ‘Primates’ etc. Therefore, with a "super" gold data, we might achieve better accuracies using current models.
+We surmise that this error resulted because we went too far up the classification graph when generating the data category labels (especially for fine-grained ones). When we go too far up the classification graph, the categories become too general to make sense. For example, an article on music albums will eventually be grouped under ‘Human’, ‘Primates’ etc. Therefore, with "super" gold data with labels that are not too fine-grained nor too general, we might achieve better accuracies using current models.
 
 ## Can two types of categories improve each other?
-Intuitively, coarse labels are easier to aquire. A network doing fine-grained classification will converge faster if pre-trained on coarse labels. Compared to training directly on fine labels, this method is quick, handy and can achieve comparable results.
+Intuitively, coarse labels are easier for models to acquire. We thought that a network for fine-grained classification will converge more quickly if it is pre-trained on coarse labels. Compared to entirely training directly on fine labels, this method is quick, handy, and may be able to achieve comparable results.
 
-On the other hand, if a network is first trained on finer-grained categories, it should find it easy when testing on coarse labels and performs better. These ideas direct us to the following formal hypotheses, and we validate them with experimental results.
+On the other hand, we thought that if a network is first trained on finer-grained categories, testing on coarse labels should be a relatively easier task and thus it should perform better. These ideas direct us to the following formal hypotheses, which we validate with experimental results.
 
 ### Coarse -> Fine
 #### Hypothesis
