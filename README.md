@@ -15,9 +15,13 @@ Next, you should be able to load each notebook into a jupyter session, and step
 through the cells.
 
 `cis700/dataset.py`: code for loading data as a pytorch dataset
+
 `cis700/prepare.py`: code for pre-processing DBPedia data into a format convenient for us
+
 `cis700/tokenizer.py`: code for initializing BERT tokenizer (which we used only for tokenizing)
+
 `cis700/utils.py`: various utility code to help training
+
 `cis700/vocab/bert-base-uncased-vocab.txt`: BERT vocab file for initializing the tokenizer
 
 ---
