@@ -67,12 +67,12 @@ The self-attention model gets inspiration from the Transformer model. Generally,
 <center> source: [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) </center>
 
 ### Word Representation
-There are various types of word embeddings out there. But we decide to train our own embeddings. Specifically, we start with a dictionary that contains thousands of words. Then, we feed the size of vocabulary into `nn.embedding` module in PyTorch and it will randomly initialize embeddings. As we train of our model, the word embeddings are also trained as a by-product of the learning process.
+There are various types of pretrained word embeddings out there. However, instead of using these, we decide to train our own embeddings. Specifically, we start with a dictionary that contains thousands of words. Then, we feed the size of vocabulary into `nn.embedding` module in PyTorch and it randomly initializes embeddings. As we train our model, the word embeddings are also trained as a by-product of the learning process.
 
-But which dictionary do we consult? First, we tried to build our own. We filtered out stop words, stripped punctuation, lowercased all words, and threw out all words that occurred less than <math><mn>N</mn></math> times (<math><mn>N</mn></math> varies from 10 to 100), etc. But when we used our own vocabulary, our LSTM did not perform better than 35%, so we tried using the [WordPiece](https://arxiv.org/pdf/1609.08144.pdf) vocabulary with over 30,000 tokens (which was also used by BERT for tokenization), which helped increase the accuracy a LOT!
+But which dictionary do we consult? First, we tried to build our own. We took our dataset and filtered out stop words, stripped punctuation, lowercased all words, and threw out all words that occurred less than <math><mn>N</mn></math> times (where <math><mn>N</mn></math> varies from 10 to 100), etc. But when we used our own vocabulary, our LSTM did not perform better than 35%, so we tried using the [WordPiece](https://arxiv.org/pdf/1609.08144.pdf) vocabulary with over 30,000 tokens (which was also used by BERT for tokenization), which increased the accuracy by a LOT!
 
 ### Results
-Without much surprise, the advanced deep model outperforms the other two models.
+To no one's surprise, the advanced deep model outperforms the other two models.
 <center>
 
 |                     | Logistic Regression  | LSTM  | Self-attention model |
