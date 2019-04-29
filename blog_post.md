@@ -61,7 +61,7 @@ We finally get 370 fine categories and 180 coarse categories.
 ### Models
 Let's get down to the task, and get some numbers. We implement the task on three different models: **Logistic Regression**, **LSTM**, and a **self-attention** model. These correspond to a non-deep learning benchmark, a base deep model, and an advanced deep model. Hypothetically, the performance will increase with the level of complication of the model. Before jumping to the result, let me expand a bit on the self-attention model.
 
-The self-attention model gets inspiration from the Transformer model. Generally, a Transformer consists of an encoder and a decoder to transduce sequences. We retain a similar encoder with multi-head self-attention, and then directly add a fully connected linear layer for classification. Our final model has 6 encoder layers, with one typical layer shown in the figure below.
+The self-attention model was inspired by the Transformer model. Generally, a Transformer consists of an encoder and a decoder to transduce sequences. We retain a similar encoder with multi-head self-attention, and then directly add a fully connected linear layer for classification. Our final model has 6 encoder layers, with one typical layer shown in the figure below.
 
 <center><img src="http://jalammar.github.io/images/t/transformer_resideual_layer_norm.png" width="500"></center>
 <center> source: [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) </center>
