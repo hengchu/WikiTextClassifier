@@ -4,7 +4,7 @@
 
 Text classification is an old, classical problem in the field of *supervised* machine learning--maybe too old. It is widely used either commercially: building spam filters, depression detection in social media etc., or as a benchmark task for evaluating newly-designed models in academia.
 
-Is text classification a solved task? The general belief is that it is not. What is left there, and how can we improve it? In this article, we will discuss our hypotheses for and findings from text classification on DBpedia data.
+Is text classification a solved task? The general belief is that it is not. What is left out there and how can we improve it? In this article, we will discuss our hypotheses for and findings from text classification on DBpedia data.
 
 ## Why DBpedia?
 **TL; DR**: DBpedia provides categories for entities at different levels of granularity. This is awesome for text classification tasks, as we can avoid manual annotation for their topics. 
@@ -59,9 +59,9 @@ We finally end up 370 fine categories and 180 coarse categories.
 
 ## Performance of different models
 ### Models
-Let's get down to the task, and get some numbers. We implement the task on three different models: **Logistic Regression**, **LSTM**, and a **self-attention** model. These correspond to a non-deep learning benchmark, a base deep model, and an advanced deep model. Hypothetically, the performance will increase with the level of complication of the model. Before jumping to the result, let me expand a bit on the self-attention model.
+Let's get down to the task, and get some numbers. We implement the task on three different models: **Logistic Regression**, **LSTM**, and a **Self-attention** model. These correspond to a non-deep learning benchmark, a base deep model, and an advanced deep model. Hypothetically, the performance will increase with the level of complexity of the model. Before jumping to the result, let me expand a bit on the self-attention model.
 
-The self-attention model was inspired by the Transformer model. Generally, a Transformer consists of an encoder and a decoder to transduce sequences. We retain a similar encoder with multi-head self-attention, and then directly add a fully connected linear layer for classification. Our final model has 6 encoder layers, with one typical layer shown in the figure below.
+The self-attention model was inspired by the Transformer model. Generally, a Transformer consists of an encoder and a decoder to transduce sequences. We retain a similar encoder with multi-head self-attention and then directly add a fully connected linear layer for classification. Our final model has 6 encoder layers, with one typical layer shown in the figure below.
 
 <center><img src="http://jalammar.github.io/images/t/transformer_resideual_layer_norm.png" width="500"></center>
 <center> source: [The Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) </center>
@@ -82,7 +82,7 @@ To no one's surprise, the advanced deep model outperforms the other two models.
 |fine-grained category| 33.73%                | 42.55%| **43.25%**           |
 </center>
 
-For those of you interested in hyperparameters, we set the dimension of word embeddings to be **50** across all experiments. On our self-attention model, increasing the size of embeddings helped improve the accuracy no more than 0.3%, but it takes notoriously longer time to train. So, we kept the dimensions short.
+For those of you interested in hyperparameters, we set the dimension of word embeddings to be **50** across all experiments. On our self-attention model, increasing the size of embeddings helped improve the accuracy no more than 0.3%, but it takes notoriously longer time to train. So, we kept the dimensions small. Additionally, we truncated the maximum abstract length to 256 words (otherwise the LSTMs become tedious to train).
 
 ## Error analysis
 However, the performance of our more complicated model did not exceed that of the basic LSTM by much. What prevented our model from learning better? Taking a look at some of the wrong predictions that our model made might give us some insight.
@@ -142,10 +142,10 @@ As a result, using this "**bootstrapping**" method, we achieve a comparable accu
 
 ### Fine → Coarse
 #### Hypothesis
-Starting with a network trained to classify the articles into fine categories, we can generate a new network able to classify the articles into coarser categories by simply retraining the last few layers.
+Starting with a network trained to classify the articles into fine categories, we can generate a new network able to classify the articles into coarser categories by simply retraining the last layer. This is often known as transfer learning.
 
 #### Experiments
-We train an encoder and a classifier on fine-labeled data. Then we keep this encoder, but swap the logits layer and retrain the model on coarse labels. The performance is compared to baselines in the table below. Both models are trained for 10 epochs. We observe a substantial increase in the performance of a model pre-trained on fine-grained categories.
+We trained an encoder and a classifier on fine-labeled data. Then we kept this encoder, but trained a new logit layer using coarse labels. The performance is compared to baselines in the table below. Both models are trained for 10 epochs. We observe a substantial increase in the performance of a model pre-trained on fine-grained categories.
 <center>
 
 |          | baseline | pre-trained model |
@@ -153,7 +153,13 @@ We train an encoder and a classifier on fine-labeled data. Then we keep this enc
 | accuracy | 44.22%   | **49.05%**        |
 </center>
 
+In the previous example, we used the full dataset to train the new logit layer. However, this is often impossible. Indeed, the goal of transfer learning is often to use a model when there is insufficient data to train the full model. So, we also retrained the new logit layer with a smaller dataset (110,000 abstracts, which is 10% the size of the normal training set). We also made sure that the original (fine-label trained) model has never seen this data. This provides a more accurate estimate of transfer-learning performance. The performance is compared to baselines in the table below. Both models are trained for 10 epochs. We again observe an increase in the performance.
+
+|          | baseline | pre-trained model |
+|:--------:|:--------:|:-----------------:|
+| accuracy | 44.22%   | **45.61%**        |
+
 ## Wrapping up
-We have investigated the classical problem in NLP, text classification. The experiments present the capacity and effectiveness of neural-based models such as LSTM. Moreover, attention mechanisms are powerful at extending the capacity of neural models. The next wave of language-based learning algorithms promises even greater abilities such as learning with limited labeled data.
+We have investigated a classical problem in NLP, text classification, using a relatively challenging dataset. The experiments present the capacity and effectiveness of neural-based models (e.g. LSTMs). Moreover, attention mechanisms are clearly powerful at extending the capacity of neural models. We have also demonstrated some methods that allowed us to improve our testing accuracy above what we could achieve through a conventional model training approach .The next wave of language-based learning algorithms promises even greater abilities such as learning with limited labeled data.
 
 **Notice**: Thanks if you made it this far. Are there errors you would love to correct? Feel free to leave comments and share your thoughts. We also put together our code on [github](https://github.com/hengchu/cis700project).
