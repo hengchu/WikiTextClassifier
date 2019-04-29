@@ -115,7 +115,7 @@ Intuitively, coarse labels are easier for models to acquire. We thought that a n
 
 On the other hand, we thought that if a network is first trained on finer-grained categories, testing on coarse labels should be a relatively easier task and thus it should perform better. These ideas direct us to the following formal hypotheses, which we validate with experimental results.
 
-### Coarse -> Fine
+### Coarse → Fine
 #### Hypothesis
 If we want to train a network to classify the articles into fine categories, we can get improved performance and faster convergence by pre-training on the coarse categories (as compared to directly training on the fine categories).
 
@@ -140,7 +140,7 @@ As a result, using this "**bootstrapping**" method, we achieve a comparable accu
 
 </center>
 
-### Fine -> Coarse
+### Fine → Coarse
 #### Hypothesis
 Starting with a network trained to classify the articles into fine categories, we can generate a new network able to classify the articles into coarser categories by simply retraining the last few layers.
 
