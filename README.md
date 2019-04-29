@@ -2,6 +2,26 @@
 
 ---
 
+### Code organization
+
+This repository hosts a python project containing the infrastructural code for
+loading datasets and tokenizing texts that are shared by multiple exploration
+notebooks.
+
+In order to obtain the data and install the shared code, follow the instructions
+in the next section.
+
+Next, you should be able to load each notebook into a jupyter session, and step
+through the cells.
+
+`cis700/dataset.py`: code for loading data as a pytorch dataset
+`cis700/prepare.py`: code for pre-processing DBPedia data into a format convenient for us
+`cis700/tokenizer.py`: code for initializing BERT tokenizer (which we used only for tokenizing)
+`cis700/utils.py`: various utility code to help training
+`cis700/vocab/bert-base-uncased-vocab.txt`: BERT vocab file for initializing the tokenizer
+
+---
+
 ### To obtain a copy of the data
 
 1. Download the zip file here: https://drive.google.com/file/d/14eBl391iTjj-X6OLiQNyBUovIFcZ-Xs_/view?usp=sharing
