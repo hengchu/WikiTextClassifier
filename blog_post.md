@@ -31,10 +31,10 @@ The `dbpedia_object_url` contains categories that this body of text belongs to. 
 5. [dbc:Picture\_books\_by\_Graeme_Base](http://dbpedia.org/page/Category:Picture_books_by_Graeme_Base)
 6. [dbc:Puzzle_books](http://dbpedia.org/page/Category:Puzzle_books)
 
-As is shown above, each of these categories inhabit a level of granularity in a hierarchy. For example, [dbc:Puzzle_books](http://dbpedia.org/page/Category:Puzzle_books) is a subcategory of [dbc:Puzzles](http://dbpedia.org/page/Category:Puzzles).
+The categories above each inhabit a level of granularity in a hierarchy. For example, the `dbpedia_object_url` [dbc:Puzzle_books](http://dbpedia.org/page/Category:Puzzle_books) is a subcategory of [dbc:Puzzles](http://dbpedia.org/page/Category:Puzzles).
 
 This looks great! Those categories serve as perfect labels for our task, and we get away with manual annotation, which is painfully inefficient and expensive.
-
+<img style="float: right;><img src="https://www.researchgate.net/profile/David_Chen136/publication/273122359/figure/fig17/AS:613998374436864@1523400028040/DBpedia-ontology.png" width="500">
 In our experiments, we extract two types of categories for each piece of text: a **coarse** one and a **fine-grained** one.
 
 The original DBPedia long abstract dataset mapped each body of text to its most
@@ -52,6 +52,9 @@ are primates). We tuned N so that the labels still appear descriptive of the
 text for humans.
 
 We finally get 370 fine categories and 180 coarse categories.
+
+
+
 
 ## Performance of different models
 ### Models
