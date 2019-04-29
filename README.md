@@ -1,4 +1,11 @@
 # cis700project
+---
+### Background
+Text classification is a difficult but highly real-world relevant task. Here, we explored various approaches to improve the classification of Wikipedia articles based on the first paragraph of the corresponding article. We obtained our data from the DBPedia Abstract Corpus (specifically the long abstract dataset). This dataset encapsulates approximately ~1.3 million Wikipedia articles. For each of these articles it includes a long abstract (the first paragraph of the article) as well as multiple levels of categorization of that article with varying degrees of specificity. For example, an article about the city Vienna in Austria could have a top-level label of geography, a next level label of cities, a next level label of Austria, etc.
+
+Because of the complexity of each abstract, building a model to classify articles into categories is a non-trivial task. However, since in this dataset we have multiple labels for each article, we have additional information available that we can use to improve our article classifications. Specifically, we did the following. We first identified two levels of labels, i.e. fine and coarse labels, and discarded all other labels. In other words, each abstract in our dataset had a fine and a coarse label. We had a total of 180 coarse classes and 370 fine classes (see Exploratory Data Analysis). As a baseline, we trained logistic regression, LSTM, and Self-attention (Transformer encoder) models (see below for actual implementation) to classify the articles into fine and coarse labels (so 6 baselines in total). We then attempted to improve performance by the following approaches:
+Method 1: Starting with a network trained to classify the articles into fine categories, we generated a new network able to classify the articles into coarser categories by simply retraining the top layer.
+Method 2:  To improve performance on fine label classification, we first pre-trained the network on the coarse categories before continuing to train on fine categories.
 
 ---
 
