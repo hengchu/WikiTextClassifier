@@ -110,7 +110,7 @@ OK, though *information technology* is arguably a better categorization, we ende
 
 We surmise that this error resulted because we went too far up the classification graph when generating the data category labels (especially for fine-grained ones). When we go too far up the classification graph, the categories become too general to make sense. For example, an article on music albums will eventually be grouped under ‘Human’, ‘Primates’ etc. Therefore, with "super" gold data with labels that are not too fine-grained nor too general, we might achieve better accuracies using current models.
 
-## Can two types of categories improve each other?
+## Can the two types of categories be used to improve performance?
 Intuitively, coarse labels are easier for models to acquire. We thought that a network for fine-grained classification will converge more quickly if it is pre-trained on coarse labels. Compared to entirely training directly on fine labels, this method is quick, handy, and may be able to achieve comparable results.
 
 On the other hand, we thought that if a network is first trained on finer-grained categories, testing on coarse labels should be a relatively easier task and thus it should perform better. These ideas direct us to the following formal hypotheses, which we validate with experimental results.
