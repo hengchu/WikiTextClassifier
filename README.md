@@ -1,4 +1,5 @@
 # cis700project
+#By Ivan Kuznetsov, Sun Jae (Jasmine) Lee, Danni Ma, Hengchu Zhang
 ---
 ### Background
 Text classification is a difficult but highly real-world relevant task. Here, we explored various approaches to improve the classification of Wikipedia articles based on the first paragraph of the corresponding article. We obtained our data from the DBPedia Abstract Corpus (specifically the long abstract dataset). This dataset encapsulates approximately ~1.3 million Wikipedia articles. For each of these articles it includes a long abstract (the first paragraph of the article) as well as multiple levels of categorization of that article with varying degrees of specificity. For example, an article about the city Vienna in Austria could have a top-level label of geography, a next level label of cities, a next level label of Austria, etc.
