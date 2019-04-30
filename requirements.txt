@@ -4,3 +4,4 @@ jupyter
 tensorflow
 tensorboardX
 matplotlib
+scikit-learn
