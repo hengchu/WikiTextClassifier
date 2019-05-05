@@ -1,0 +1,6 @@
+venv
+logs
+checkpoints
+*.ipynb
+*.egg-info/
+build/
