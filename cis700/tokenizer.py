@@ -1,8 +1,10 @@
 import sys
-from pytorch_pretrained_bert.tokenization import BertTokenizer
+import pkg_resources
+from cis700.tokenization import BertTokenizer
 
 def build_tokenizer():
-    tokenizer = BertTokenizer('cis700/vocab/bert-base-uncased-vocab.txt')
+    vocab_path = pkg_resources.resource_filename('cis700', 'vocab/bert-base-uncased-vocab.txt')
+    tokenizer = BertTokenizer(vocab_path)
     return tokenizer
 
 def main():

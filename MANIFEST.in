@@ -1,1 +1,2 @@
 recursive-include cis700/vocab *
+recursive-include cis700/models *
