@@ -8,6 +8,7 @@ import os
 import logging
 import sys
 
+from itertools import zip_longest
 from cis700.tokenizer import build_tokenizer
 
 tok = build_tokenizer()
@@ -48,6 +49,12 @@ if not os.path.exists(EXTRA_PACKAGES_PATH):
 if EXTRA_PACKAGES_PATH not in sys.path:
     sys.path.append(EXTRA_PACKAGES_PATH)
 
+def grouper(iterable, n, fillvalue=None):
+    "Collect data into fixed-length chunks or blocks"
+    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return zip_longest(*args, fillvalue=fillvalue)
+
 def load_model():
     import torch
     from cis700.model import Classifier
@@ -67,12 +74,13 @@ def truncate(ids, max_seq_len):
 def featurize_text(text, max_seq_len):
     tokens = tok.tokenize(text)
     ids = tok.convert_tokens_to_ids(tokens)
-    ids = truncate(ids, max_seq_len)
-    masks = [1] * len(ids)
-    while len(ids) < max_seq_len:
-        ids.append(0)
-        masks.append(0)
-    return ids, masks
+    for id_chunks in grouper(ids, max_seq_len):
+        id_chunks = [x for x in id_chunks if x is not None]
+        masks = [1] * len(id_chunks)
+        while len(id_chunks) < max_seq_len:
+            id_chunks.append(0)
+            masks.append(0)
+        yield (id_chunks, masks)
 
 def unzip_extra_package(file):
     with zipfile.ZipFile(file, 'r') as zf:
@@ -109,21 +117,40 @@ def lambda_handler(event, context):
     import torch
 
     text = event.get('input_text')
-    ids, masks = featurize_text(text, PARAMS['max_seq_len'])
-    ids = torch.Tensor(ids).type(torch.LongTensor).unsqueeze(0)
-    masks = torch.Tensor(masks).unsqueeze(0)
+    # must be either aggregate or truncate
+    mode = event.get('mode')
+    if mode not in ['aggregate', 'truncate']:
+        return {
+            'statusCode': 400,
+            'body': 'unrecognized mode %s' % mode
+        }
+    if not isinstance(text, str):
+        return {
+            'statusCode': 400,
+            'body': 'input_text is not a string'
+        }
 
     model = load_model()
-    with torch.no_grad():
-        scores = model(ids, masks).squeeze().cpu().numpy()
-        exp_scores = np.exp(scores)
-        scores = (exp_scores / np.sum(exp_scores)).tolist()
-        result = {}
-        for i in range(len(scores)):
-            category = COARSE_MAP[str(i)]
-            result[category] = scores[i]
+    total_scores = np.zeros(PARAMS['num_classes'])
+    for ids, masks in featurize_text(text, PARAMS['max_seq_len']):
+        ids = torch.Tensor(ids).type(torch.LongTensor).unsqueeze(0)
+        masks = torch.Tensor(masks).unsqueeze(0)
 
-        return {
-            'statusCode': 200,
-            'body': result
-        }
+        with torch.no_grad():
+            scores = model(ids, masks).squeeze().cpu().numpy()
+            total_scores += scores
+
+        if mode == 'truncate':
+            break
+
+    exp_scores = np.exp(total_scores)
+    scores = (exp_scores / np.sum(exp_scores)).tolist()
+    result = {}
+    for i in range(len(scores)):
+        category = COARSE_MAP[str(i)]
+        result[category] = scores[i]
+
+    return {
+        'statusCode': 200,
+        'body': result
+    }
